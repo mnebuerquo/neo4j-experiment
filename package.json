@@ -1,0 +1,16 @@
+{
+  "name": "nfj",
+  "version": "1.0.0",
+  "description": "a node test of neo4j stuff",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "async": "^2.3.0",
+    "neo4j": "^2.0.0-RC2",
+    "sillyname": "^0.1.0"
+  }
+}
