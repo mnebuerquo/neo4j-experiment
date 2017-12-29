@@ -42,7 +42,7 @@ async.map(users, User.create, (err, saved) => {
 		let phonies = User.find({phone: u.phone},(err,results) =>{
 			async.each(results, (f, cb) => {
 				f.follow(u, cb)
-				console.log(f.username, ' is following ', u.username)
+				console.log(f.username, ' is following ', u.username, ' by phone')
 			}, cb)
 		})
 	}, (err) => {
@@ -60,7 +60,7 @@ async.map(users, User.create, (err, saved) => {
 			f.follow(u, cb)
 			console.log(f.username, ' is following ', u.username)
 		} else {
-			console.log(f.username, ' is not following anyone new at this time.')
+			console.log(u.username, ' has no new followers at this time.')
 			return cb(null)
 		}
 	}, (err) => {
@@ -69,4 +69,4 @@ async.map(users, User.create, (err, saved) => {
 		}
 		console.log('done adding extra followers')
 	})
-})
+}) 

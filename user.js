@@ -30,6 +30,8 @@ User.VALIDATION_INFO = {
 		pattern: /^[A-Za-z0-9_]+$/,
 		message: '2-32 characters; letters, numbers, and underscores only.'
 	},
+	'fullname':{},
+	'phone': {},
 };
 
 // Public instance properties:
@@ -267,11 +269,38 @@ User.find = function (props, callback) {
 	}, function (err, results) {
 		if (err) return callback(err);
 		var users = results.map(function (result) {
-			return new User(result['user']);
+			const u = result['user']
+			console.log(u)
+			return new User(u);
 		});
 		callback(null, users);
 	});
 };
+
+User.findUnconnected = function (props, callback) {
+	var query = [
+		'MATCH (user:User)',
+		'WHERE NOT (user)-[:follows]->() AND NOT ()-[:follows]->(user)',
+		'RETURN user',
+	].join('\n')
+
+	var params = {
+		props: props
+	};
+
+	db.cypher({
+		query: query,
+		params: params,
+	}, function (err, results) {
+		if (err) return callback(err);
+		var users = results.map(function (result) {
+			const u = result['user']
+			console.log(u)
+			return new User(u);
+		});
+		callback(null, users);
+	});
+}
 
 User.get = function (username, callback) {
 	var query = [
@@ -325,10 +354,12 @@ User.create = function (props, callback) {
 		props: validate(props)
 	};
 
-	db.cypher({
+	var query = {
 		query: query,
 		params: params,
-	}, function (err, results) {
+	}
+	console.log(query)
+	db.cypher(query, function (err, results) {
 		if (isConstraintViolation(err)) {
 			// TODO: This assumes username is the only relevant constraint.
 			// We could parse the constraint property out of the error message,
